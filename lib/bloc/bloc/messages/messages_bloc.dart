@@ -31,6 +31,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
     Stream<QuerySnapshot> chatStream =
         _messageRepository.getChats(userId: currentUserId);
+    // Pass State so we can use it in main method
     yield ChatLoadedState(chatStream: chatStream);
   }
 }

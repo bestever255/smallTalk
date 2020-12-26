@@ -64,7 +64,7 @@ class MessageRepository {
         _message.photourl = message['photourl'];
         _message.timestamp = message['timestamp'];
       });
-    });
+    }).catchError((e) => print(e));
     return _message;
   }
 }

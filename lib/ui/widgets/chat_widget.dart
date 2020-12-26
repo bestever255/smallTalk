@@ -7,17 +7,17 @@ import 'package:tinder_clone/repository/message_repository.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
 import 'package:tinder_clone/ui/widgets/photo_widget.dart';
 
-class Chat extends StatefulWidget {
+class ChatWidget extends StatefulWidget {
   final String userId;
   final String selectedUserId;
   final Timestamp creationTime;
 
-  const Chat({this.userId, this.selectedUserId, this.creationTime});
+  const ChatWidget({this.userId, this.selectedUserId, this.creationTime});
   @override
-  _ChatState createState() => _ChatState();
+  _ChatWidgetState createState() => _ChatWidgetState();
 }
 
-class _ChatState extends State<Chat> {
+class _ChatWidgetState extends State<ChatWidget> {
   MessageRepository _messageRepository = MessageRepository();
   ChatModel _chat;
   u.User _user;
@@ -29,22 +29,22 @@ class _ChatState extends State<Chat> {
         .getLastMessage(
             currentUserId: widget.userId, selectedUserId: widget.selectedUserId)
         .catchError((e) => print(e));
-
     if (message == null) {
-      return ChatModel(
+      _chat = ChatModel(
           name: _user.name,
           photourl: _user.photo,
           lastMessageSend: null,
           lastMessagePhoto: null,
           timestamp: null);
     } else {
-      return ChatModel(
+      _chat = ChatModel(
           name: _user.name,
           photourl: _user.photo,
           lastMessageSend: message.text,
           lastMessagePhoto: message.photos,
           timestamp: message.timestamp);
     }
+    return _chat;
   }
 
   Future openChat() async {
@@ -79,10 +79,7 @@ class _ChatState extends State<Chat> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return Center(
-            child: Text(
-              'Nothing is here',
-              style: TextStyle(color: Colors.black, fontSize: 16),
-            ),
+            child: CircularProgressIndicator(),
           );
         } else {
           return GestureDetector(
@@ -102,10 +99,11 @@ class _ChatState extends State<Chat> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        SizedBox(height: height * .02),
                         Text(
                           'You will not be able to recover this chat',
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                            color: Colors.black54,
                           ),
                         ),
                       ],
@@ -138,7 +136,7 @@ class _ChatState extends State<Chat> {
               );
             },
             child: Padding(
-              padding: EdgeInsets.all(height * .02),
+              padding: EdgeInsets.all(height * .015),
               child: Container(
                 width: width,
                 decoration: BoxDecoration(
@@ -154,12 +152,12 @@ class _ChatState extends State<Chat> {
                       children: [
                         ClipOval(
                           child: Container(
-                              height: height * .06,
-                              width: width * .06,
+                              height: height * .07,
+                              width: height * .07,
                               child: PhotoWidget(_user.photo)),
                         ),
                         SizedBox(
-                          width: width * .02,
+                          width: width * .03,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,9 +165,12 @@ class _ChatState extends State<Chat> {
                             Text(
                               _user.name,
                               style: TextStyle(
-                                fontSize: height * .05,
-                                fontWeight: FontWeight.bold,
+                                fontSize: height * .03,
+                                fontWeight: FontWeight.w500,
                               ),
+                            ),
+                            SizedBox(
+                              height: height * .002,
                             ),
                             _chat.lastMessageSend != null
                                 ? Text(
