@@ -1,7 +1,6 @@
-# tinder_clone
+# smallTalk
 
-A new Flutter project.
-
+Flutter APP using BLoC for state managment and firebase for data storage
 ## Getting Started
 
 This project is a starting point for a Flutter application.
