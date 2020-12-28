@@ -78,7 +78,7 @@ class _MatchesState extends State<Matches> {
                   ),
                 ),
               ),
-              StreamBuilder<QuerySnapshot>( 
+              StreamBuilder<QuerySnapshot>(
                 stream: state.matchedList,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (!snapshot.hasData) {
@@ -360,6 +360,8 @@ class _MatchesState extends State<Matches> {
                                                                     .uid,
                                                           ),
                                                         );
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
                                                     ),
                                                     SizedBox(
@@ -392,6 +394,8 @@ class _MatchesState extends State<Matches> {
                                                                     .name,
                                                           ),
                                                         );
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
                                                     ),
                                                   ],

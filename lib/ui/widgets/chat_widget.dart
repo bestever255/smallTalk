@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:tinder_clone/models/chat.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/models/user.dart' as u;
@@ -7,27 +8,22 @@ import 'package:tinder_clone/repository/message_repository.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
 import 'package:tinder_clone/ui/widgets/photo_widget.dart';
 
-class ChatWidget extends StatefulWidget {
+// ignore: must_be_immutable
+class ChatWidget extends StatelessWidget {
   final String userId;
   final String selectedUserId;
   final Timestamp creationTime;
 
-  const ChatWidget({this.userId, this.selectedUserId, this.creationTime});
-  @override
-  _ChatWidgetState createState() => _ChatWidgetState();
-}
+  ChatWidget({this.userId, this.selectedUserId, this.creationTime});
 
-class _ChatWidgetState extends State<ChatWidget> {
   MessageRepository _messageRepository = MessageRepository();
   ChatModel _chat;
   u.User _user;
 
   Future<ChatModel> getUserDetails() async {
-    _user =
-        await _messageRepository.getUserDetail(userId: widget.selectedUserId);
+    _user = await _messageRepository.getUserDetail(userId: selectedUserId);
     Message message = await _messageRepository
-        .getLastMessage(
-            currentUserId: widget.userId, selectedUserId: widget.selectedUserId)
+        .getLastMessage(currentUserId: userId, selectedUserId: selectedUserId)
         .catchError((e) => print(e));
     if (message == null) {
       _chat = ChatModel(
@@ -47,11 +43,10 @@ class _ChatWidgetState extends State<ChatWidget> {
     return _chat;
   }
 
-  Future openChat() async {
-    u.User currentUser =
-        await _messageRepository.getUserDetail(userId: widget.userId);
+  Future openChat(BuildContext context) async {
+    u.User currentUser = await _messageRepository.getUserDetail(userId: userId);
     u.User selectedUser =
-        await _messageRepository.getUserDetail(userId: widget.selectedUserId);
+        await _messageRepository.getUserDetail(userId: selectedUserId);
 
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -65,13 +60,13 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   Future deleteChat() async {
     await _messageRepository.deleteChat(
-      currentUserId: widget.userId,
-      selectedUserId: widget.selectedUserId,
+      currentUserId: userId,
+      selectedUserId: selectedUserId,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return FutureBuilder(
@@ -84,7 +79,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         } else {
           return GestureDetector(
             onTap: () async {
-              await openChat();
+              await openChat(context);
             },
             onLongPress: () {
               showDialog(
@@ -152,9 +147,10 @@ class _ChatWidgetState extends State<ChatWidget> {
                       children: [
                         ClipOval(
                           child: Container(
-                              height: height * .07,
-                              width: height * .07,
-                              child: PhotoWidget(_user.photo)),
+                            height: height * .07,
+                            width: height * .07,
+                            child: PhotoWidget(_user.photo),
+                          ),
                         ),
                         SizedBox(
                           width: width * .03,
@@ -204,15 +200,16 @@ class _ChatWidgetState extends State<ChatWidget> {
                     ),
                     _chat.timestamp != null
                         ? Text(
-                            _chat.timestamp.toDate().hour.toString() +
-                                ":" +
-                                _chat.timestamp.toDate().minute.toString(),
-                            style: TextStyle(color: Colors.black),
+                            timeago.format(_chat.timestamp.toDate()),
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
                           )
                         : Text(
-                            widget.creationTime.toDate().hour.toString() +
-                                ":" +
-                                widget.creationTime.toDate().minute.toString(),
+                            timeago.format(creationTime.toDate()),
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
                           ),
                   ],
                 ),

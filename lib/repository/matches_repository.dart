@@ -4,7 +4,7 @@ import 'package:tinder_clone/models/user.dart';
 class MatchesRepository {
   final FirebaseFirestore _firestore;
   MatchesRepository(
-      {FirebaseFirestore firestore, MatchesRepository searchRepository})
+      {FirebaseFirestore firestore, MatchesRepository matchesRepository})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Stream<QuerySnapshot> getMatchedList(String userId) {

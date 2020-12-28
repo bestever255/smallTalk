@@ -5,7 +5,7 @@ import 'package:tinder_clone/models/user.dart';
 class MessageRepository {
   final FirebaseFirestore _firestore;
   MessageRepository(
-      {FirebaseFirestore firestore, MessageRepository searchRepository})
+      {FirebaseFirestore firestore, MessageRepository messageRepository})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
   // Fetch List of Message like you have a list of chat with karim , mazen , moustfa etc..
