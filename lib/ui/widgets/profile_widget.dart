@@ -35,9 +35,9 @@ class ProfileWidget extends StatelessWidget {
               spreadRadius: 2.0,
               offset: Offset(
                 // make shadow on the right
-                10.0,
+                5.0,
                 // make shadow at the bottom
-                10.0,
+                5.0,
               ),
             ),
           ],

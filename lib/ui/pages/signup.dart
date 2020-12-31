@@ -15,7 +15,12 @@ class Signup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign up'),
+        title: Text(
+          'Sign up',
+          style: TextStyle(
+            fontSize: 36,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: kBackGroundColor,
         elevation: 0,

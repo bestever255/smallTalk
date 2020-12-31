@@ -56,10 +56,11 @@ class MessagingRepository {
         'senderName': message.senderName,
         'senderId': message.senderId,
         'text': message.text,
-        'photourl': message.photourl,
+        'photourl': null,
         'timestamp': DateTime.now(),
       });
     }
+    //  STOPPED AT 40
     senderRef.doc(messageRef.id).set({
       'timestamp': DateTime.now(),
     });
@@ -95,7 +96,7 @@ class MessagingRepository {
   }
 
   Future<Message> getMessageDetail({String messageId}) async {
-    Message _message;
+    Message _message = Message();
     await _firestore
         .collection('messages')
         .doc(messageId)
@@ -103,7 +104,7 @@ class MessagingRepository {
         .then((message) {
       _message.senderId = message['senderId'];
       _message.senderName = message['senderName'];
-      _message.senderId = message['senderId'];
+      _message.timestamp = message['timestamp'];
       _message.text = message['text'];
       _message.photourl = message['photourl'];
     });

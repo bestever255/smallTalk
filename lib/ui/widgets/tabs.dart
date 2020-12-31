@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder_clone/ui/constants.dart';
 import 'package:tinder_clone/ui/pages/matches.dart';
@@ -13,8 +14,8 @@ class Tabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      Search(userId),
       Matches(userId),
+      Search(userId),
       Messages(
         userId: userId,
       ),
@@ -28,6 +29,9 @@ class Tabs extends StatelessWidget {
         length: pages.length,
         child: Scaffold(
           appBar: AppBar(
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            backgroundColor: Colors.grey[850],
             actions: [
               IconButton(
                   icon: Icon(Icons.exit_to_app),
@@ -37,7 +41,7 @@ class Tabs extends StatelessWidget {
                   }),
             ],
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(48.0),
+              preferredSize: Size.fromHeight(30.0),
               child: Container(
                 height: 48.0,
                 alignment: Alignment.center,
@@ -45,15 +49,19 @@ class Tabs extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TabBar(
+                      indicatorColor: Colors.transparent,
                       tabs: [
-                        Tab(
-                          icon: Icon(Icons.search),
-                        ),
                         Tab(
                           icon: Icon(Icons.people),
                         ),
                         Tab(
-                          icon: Icon(Icons.message),
+                          icon: Icon(
+                            FontAwesomeIcons.solidHeart,
+                            color: Colors.red,
+                          ),
+                        ),
+                        Tab(
+                          icon: Icon(Icons.chat_bubble_outline_sharp),
                         ),
                       ],
                     )
@@ -62,13 +70,6 @@ class Tabs extends StatelessWidget {
               ),
             ),
             centerTitle: true,
-            title: Text(
-              'Chill',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ),
           body: TabBarView(
             children: pages,
