@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/validators.dart';
 
@@ -14,28 +13,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserRepository _userRepository;
   LoginBloc({@required UserRepository userRepository})
       : assert(userRepository != null),
-        _userRepository = userRepository;
+        _userRepository = userRepository,
+        super(LoginState.empty());
 
-  @override
-  LoginState get initialState => LoginState.empty();
+  // @override
+  // Stream<LoginState> transformEvents(
+  //   Stream<LoginEvent> events,
+  //   Stream<LoginState> Function(LoginEvent event) next,
+  // ) {
+  //   // We do debounce if we need to delay the validation so we give the user time to write and not show error always
+  //   // So we need to debounce email and password
+  //   final nonDebounceStream = events.where((event) {
+  //     return (event is! EmailChanged || event is! PasswordChanged);
+  //   });
+  //   final debounceStream = events.where((event) {
+  //     return (event is EmailChanged || event is PasswordChanged);
+  //   }).debounceTime(Duration(milliseconds: 300));
 
-  @override
-  Stream<LoginState> transformEvents(
-    Stream<LoginEvent> events,
-    Stream<LoginState> Function(LoginEvent event) next,
-  ) {
-    // We do debounce if we need to delay the validation so we give the user time to write and not show error always
-    // So we need to debounce email and password
-    final nonDebounceStream = events.where((event) {
-      return (event is! EmailChanged || event is! PasswordChanged);
-    });
-    final debounceStream = events.where((event) {
-      return (event is EmailChanged || event is PasswordChanged);
-    }).debounceTime(Duration(milliseconds: 300));
-
-    return super
-        .transformEvents(nonDebounceStream.mergeWith([debounceStream]), next);
-  }
+  //   return events
+  //       .transformEvents(nonDebounceStream.mergeWith([debounceStream]), next);
+  // }
 
   @override
   Stream<LoginState> mapEventToState(

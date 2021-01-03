@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:tinder_clone/bloc/bloc/matches/bloc/matches_bloc.dart';
+import 'package:tinder_clone/bloc/bloc/search/bloc/search_bloc.dart' as search;
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/matches_repository.dart';
+import 'package:tinder_clone/repository/search_repository.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
 import 'package:tinder_clone/ui/widgets/icon_widget.dart';
 import 'package:tinder_clone/ui/widgets/profile_widget.dart';
@@ -21,32 +22,22 @@ class Matches extends StatefulWidget {
 
 class _MatchesState extends State<Matches> {
   MatchesRepository _matchesRepository = MatchesRepository();
+  SearchRepository _searchRepository = SearchRepository();
   MatchesBloc _matchesBloc;
-
+  search.SearchBloc _searchBloc;
   int difference;
-  Future<void> getDifference(GeoPoint userLocation) async {
-    try {
-      // Get Your current Position
-      Position position = await Geolocator.getCurrentPosition();
-      // Get Other user location and calculate difference
-      double location = Geolocator.distanceBetween(userLocation.latitude,
-          userLocation.longitude, position.latitude, position.longitude);
-
-      difference = location.toInt();
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     _matchesBloc = MatchesBloc(matchesRepository: _matchesRepository);
+    _searchBloc = search.SearchBloc(searchRepository: _searchRepository);
   }
 
   @override
   void dispose() {
     _matchesBloc.close();
+    _searchBloc.close();
     super.dispose();
   }
 
@@ -55,7 +46,7 @@ class _MatchesState extends State<Matches> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return BlocBuilder<MatchesBloc, MatchesState>(
-      bloc: _matchesBloc,
+      cubit: _matchesBloc,
       builder: (context, state) {
         if (state is LoadingState) {
           _matchesBloc.add(LoadListEvent(
@@ -96,7 +87,8 @@ class _MatchesState extends State<Matches> {
                                   .getUserDetails(user[index].documentID);
                               User currentUser = await _matchesRepository
                                   .getUserDetails(widget.userId);
-                              await getDifference(selectedUser.location);
+                              await _searchBloc.getDifference(
+                                  selectedUser.location, difference);
                               showDialog(
                                 context: context,
                                 builder: (context) {
@@ -268,7 +260,8 @@ class _MatchesState extends State<Matches> {
                               User currentUser = await _matchesRepository
                                   .getUserDetails(widget.userId);
 
-                              await getDifference(selectedUser.location);
+                              await _searchBloc.getDifference(
+                                  selectedUser.location, difference);
                               showDialog(
                                 context: context,
                                 builder: (context) => Dialog(

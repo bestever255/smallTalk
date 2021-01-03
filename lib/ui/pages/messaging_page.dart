@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,216 +52,273 @@ class _MessagingPageState extends State<MessagingPage> {
     super.dispose();
   }
 
-  void _onFormSubmitted() {
-    print('Message Submitted');
-    _messagingBloc.add(
-      SendMessageEvent(
-        message: mes.Message(
-          text: _messageController.text.trim(),
-          senderId: widget.currentUser.uid,
-          senderName: widget.currentUser.name,
-          selectedUserId: widget.selectedUser.uid,
-          photos: null,
-        ),
-      ),
-    );
-    _messageController.clear();
-  }
-
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Color.fromRGBO(
+        25,
+        23,
+        33,
+        1,
+      ),
       appBar: AppBar(
-        backgroundColor: kBackGroundColor,
-        elevation: height * .02,
+        backgroundColor: Color.fromRGBO(
+          25,
+          23,
+          33,
+          1,
+        ),
+        elevation: 0,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            CircleAvatar(
-              radius: height * .03,
-              backgroundColor: kBackGroundColor,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  height * .02,
+            SizedBox(
+              width: width * .04,
+            ),
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    widget.selectedUser.name,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Last online at 10:45 PM',
+                    style: TextStyle(color: Colors.grey, fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 25),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: CircleAvatar(
+                backgroundColor: Color.fromRGBO(
+                  22,
+                  21,
+                  28,
+                  1,
                 ),
+                radius: 20,
                 child: PhotoWidget(
                   widget.selectedUser.photo,
                 ),
               ),
             ),
-            SizedBox(
-              width: width * .03,
-            ),
-            Expanded(
-              child: Text(
-                widget.selectedUser.name,
-              ),
-            ),
           ],
         ),
       ),
-      body: BlocBuilder<MessagingBloc, MessagingState>(
-        bloc: _messagingBloc,
-        builder: (context, state) {
-          if (state is MessagingInitialState) {
-            _messagingBloc.add(
-              MessagingStreamEvent(
-                  currentUserId: widget.currentUser.uid,
-                  selectedUserId: widget.selectedUser.uid),
-            );
-          } else if (state is MessageLoadingState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is MessageLoadedState) {
-            // Handle the messaging page
-            Stream<QuerySnapshot> messageStream = state.messageStream;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                StreamBuilder<QuerySnapshot>(
-                  stream: messageStream,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: Text(
-                          'Start The Conversation?',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+      body: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(
+            40,
+            33,
+            56,
+            .7,
+          ),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(40),
+          ),
+        ),
+        child: BlocBuilder<MessagingBloc, MessagingState>(
+          cubit: _messagingBloc,
+          builder: (context, state) {
+            if (state is MessagingInitialState) {
+              _messagingBloc.add(
+                MessagingStreamEvent(
+                    currentUserId: widget.currentUser.uid,
+                    selectedUserId: widget.selectedUser.uid),
+              );
+            } else if (state is MessageLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is MessageLoadedState) {
+              // Handle the messaging page
+              Stream<QuerySnapshot> messageStream = state.messageStream;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  StreamBuilder<QuerySnapshot>(
+                    stream: messageStream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: Text(
+                            'Start The Conversation?',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                      );
-                    } else if (snapshot.data.docs.isNotEmpty) {
-                      return Expanded(
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                itemBuilder: (ctx, i) {
-                                  return MessageWidget(
-                                    currentUserId: widget.currentUser.uid,
-                                    messageId: snapshot.data.docs[i].id,
-                                  );
-                                },
-                                itemCount: snapshot.data.docs.length,
+                        );
+                      } else if (snapshot.data.docs.isNotEmpty) {
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (ctx, i) {
+                                    return MessageWidget(
+                                      currentUserId: widget.currentUser.uid,
+                                      messageId: snapshot.data.docs[i].id,
+                                    );
+                                  },
+                                  itemCount: snapshot.data.docs.length,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Center(
+                          child: Text(
+                            'Start The Conversation ?',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: height * .07,
+                            padding: EdgeInsets.all(
+                              height * .01,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(57, 47, 85, 1),
+                              borderRadius: BorderRadius.circular(
+                                height * .04,
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Center(
-                        child: Text(
-                          'Start The Conversation ?',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                Container(
-                  width: width,
-                  height: height * .06,
-                  color: kBackGroundColor,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          FilePickerResult result = await FilePicker.platform
-                              .pickFiles(type: FileType.image);
-                          if (result != null) {
-                            File photo = File(result.files.single.path);
+                            child: Center(
+                              child: TextField(
+                                style: TextStyle(color: Colors.white),
+                                controller: _messageController,
+                                textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                textAlignVertical: TextAlignVertical.center,
+                                cursorColor: kBackGroundColor,
+                                onSubmitted: (_) {
+                                  setState(() {
+                                    _messageController.text = '';
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                    hintText: 'Message...',
+                                    hintStyle:
+                                        TextStyle(color: Colors.grey[100]),
+                                    border: InputBorder.none,
+                                    prefixIcon: IconButton(
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        icon: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () async {
+                                          FilePickerResult result =
+                                              await FilePicker.platform
+                                                  .pickFiles(
+                                                      type: FileType.image);
+                                          if (result != null) {
+                                            File photo =
+                                                File(result.files.single.path);
 
-                            if (photo != null) {
-                              _messagingBloc.add(
-                                SendMessageEvent(
-                                  message: mes.Message(
-                                    text: null,
-                                    senderName: widget.currentUser.name,
-                                    senderId: widget.currentUser.uid,
-                                    photos: photo,
-                                    selectedUserId: widget.selectedUser.uid,
-                                  ),
-                                ),
-                              );
-                            }
-                          } else {
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: height * .005,
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: height * .04,
+                                            if (photo != null) {
+                                              _messagingBloc.add(
+                                                SendMessageEvent(
+                                                  message: mes.Message(
+                                                    text: null,
+                                                    senderName:
+                                                        widget.currentUser.name,
+                                                    senderId:
+                                                        widget.currentUser.uid,
+                                                    photos: photo,
+                                                    selectedUserId:
+                                                        widget.selectedUser.uid,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          } else {
+                                            Navigator.of(context).pop();
+                                          }
+                                        }),
+                                    suffixIcon: Icon(
+                                      Icons.face_rounded,
+                                    )),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: height * .05,
-                          padding: EdgeInsets.all(
-                            height * .01,
-                          ),
+                        SizedBox(width: width * .03),
+                        Container(
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                              height * .04,
-                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            color: Color.fromRGBO(57, 47, 85, 1),
                           ),
                           child: Center(
-                            child: TextField(
-                              controller: _messageController,
-                              textInputAction: TextInputAction.newline,
-                              keyboardType: TextInputType.multiline,
-                              textAlignVertical: TextAlignVertical.center,
-                              cursorColor: kBackGroundColor,
-                              onSubmitted: (_) {
-                                setState(() {
-                                  _messageController.text = '';
-                                });
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                              ),
-                            ),
+                            child: _messageController.text != ''
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                    ),
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onPressed: isValid
+                                        ? () => _messagingBloc.onFormSubmitted(
+                                              currentUserId:
+                                                  widget.currentUser.uid,
+                                              currentUserName:
+                                                  widget.currentUser.name,
+                                              messagingBloc: _messagingBloc,
+                                              selectedUserId:
+                                                  widget.selectedUser.uid,
+                                              textEditingController:
+                                                  _messageController,
+                                            )
+                                        : null)
+                                : IconButton(
+                                    icon: Icon(
+                                      Icons.mic_none_outlined,
+                                      color: Colors.white,
+                                    ),
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onPressed: () {},
+                                  ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(
-                          height * .01,
-                        ),
-                        child: GestureDetector(
-                          onTap: isValid ? _onFormSubmitted : null,
-                          child: Icon(
-                            Icons.send,
-                            color: isValid ? Colors.white : Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
-          return Container();
-        },
+                ],
+              );
+            }
+            return Container();
+          },
+        ),
       ),
     );
   }

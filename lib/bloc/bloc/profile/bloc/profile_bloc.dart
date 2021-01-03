@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 
@@ -16,10 +18,33 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   // Make Sure it is not null
   ProfileBloc({@required UserRepository userRepository})
       : assert(userRepository != null),
-        _userRepository = userRepository;
+        _userRepository = userRepository,
+        super(ProfileState.empty());
 
-  @override
-  ProfileState get initialState => ProfileState.empty();
+  Future<void> getLocation(GeoPoint location) async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    location = GeoPoint(position.latitude, position.longitude);
+  }
+
+  void onSubmited({
+    GeoPoint location,
+    ProfileBloc profileBloc,
+    TextEditingController nameController,
+    String gender,
+    String interestedIn,
+    DateTime age,
+    File photo,
+  }) async {
+    await getLocation(location);
+    profileBloc.add(Submitted(
+        name: nameController.text,
+        gender: gender,
+        interestedIn: interestedIn,
+        age: age,
+        location: location,
+        photo: photo));
+  }
 
   @override
   Stream<ProfileState> mapEventToState(

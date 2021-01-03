@@ -74,7 +74,7 @@ class _LoginFormState extends State<LoginForm> {
     var width = MediaQuery.of(context).size.width;
     // Bloc listener is a bloc builder but does not rebuild multiple times without change but rebuilds only once when state changes only so it good for ( Navigation , Showing Snack bars , Error dialogues)
     return BlocListener<LoginBloc, LoginState>(
-      bloc: _loginBloc,
+      cubit: _loginBloc,
       listener: (context, state) {
         if (state.isFailure) {
           print('Failure');
@@ -116,7 +116,7 @@ class _LoginFormState extends State<LoginForm> {
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
-        bloc: _loginBloc,
+        cubit: _loginBloc,
         builder: (context, LoginState state) {
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,

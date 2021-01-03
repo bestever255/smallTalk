@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:tinder_clone/repository/search_repository.dart';
 import 'package:tinder_clone/models/user.dart' as u;
 
@@ -13,10 +15,22 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchRepository _searchRepository;
   SearchBloc({@required SearchRepository searchRepository})
       : assert(searchRepository != null),
-        _searchRepository = searchRepository;
+        _searchRepository = searchRepository,
+        super(InitialSearchState());
 
-  @override
-  SearchState get initialState => InitialSearchState();
+  Future<void> getDifference(GeoPoint userLocation, int difference) async {
+    try {
+      // Get Your current Position
+      Position position = await Geolocator.getCurrentPosition();
+      // Get Other user location and calculate difference
+      double location = Geolocator.distanceBetween(userLocation.latitude,
+          userLocation.longitude, position.latitude, position.longitude);
+
+      difference = location.toInt();
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Stream<SearchState> mapEventToState(

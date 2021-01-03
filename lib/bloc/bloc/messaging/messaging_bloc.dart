@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/repository/messaging_repository.dart';
@@ -14,10 +15,30 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
   final MessagingRepository _messagingRepository;
   MessagingBloc({@required MessagingRepository messagingRepository})
       : assert(messagingRepository != null),
-        _messagingRepository = messagingRepository;
+        _messagingRepository = messagingRepository,
+        super(MessagingInitialState());
 
-  @override
-  MessagingState get initialState => MessagingInitialState();
+  void onFormSubmitted({
+    TextEditingController textEditingController,
+    String currentUserId,
+    String selectedUserId,
+    String currentUserName,
+    MessagingBloc messagingBloc,
+  }) {
+    print('Message Submitted');
+    messagingBloc.add(
+      SendMessageEvent(
+        message: Message(
+          text: textEditingController.text.trim(),
+          senderId: currentUserId,
+          senderName: currentUserName,
+          selectedUserId: selectedUserId,
+          photos: null,
+        ),
+      ),
+    );
+    textEditingController.clear();
+  }
 
   @override
   Stream<MessagingState> mapEventToState(
@@ -29,6 +50,8 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
           selectedUserId: event.selectedUserId);
     } else if (event is SendMessageEvent) {
       yield* _mapSendMessageToState(message: event.message);
+    } else if (event is DeleteMessageEvent) {
+      yield* _mapDeleteMessageToState(messageId: event.messageId);
     }
   }
 
@@ -44,5 +67,10 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
 
   Stream<MessagingState> _mapSendMessageToState({Message message}) async* {
     await _messagingRepository.sendMessage(message: message);
+  }
+
+  Stream<MessagingState> _mapDeleteMessageToState({String messageId}) async* {
+    yield MessageLoadingState();
+    await _messagingRepository.deleteMessage(messageId: messageId);
   }
 }

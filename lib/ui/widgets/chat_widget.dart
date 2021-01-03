@@ -1,29 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:tinder_clone/bloc/bloc/messages/messages_bloc.dart';
 import 'package:tinder_clone/models/chat.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/models/user.dart' as u;
 import 'package:tinder_clone/repository/message_repository.dart';
-import 'package:tinder_clone/ui/pages/messaging_page.dart';
 import 'package:tinder_clone/ui/widgets/photo_widget.dart';
 
 // ignore: must_be_immutable
-class ChatWidget extends StatelessWidget {
+class ChatWidget extends StatefulWidget {
   final String userId;
   final String selectedUserId;
   final Timestamp creationTime;
 
   ChatWidget({this.userId, this.selectedUserId, this.creationTime});
 
+  @override
+  _ChatWidgetState createState() => _ChatWidgetState();
+}
+
+class _ChatWidgetState extends State<ChatWidget> {
   MessageRepository _messageRepository = MessageRepository();
   ChatModel _chat;
   u.User _user;
+  MessagesBloc _messageBloc;
 
   Future<ChatModel> getUserDetails() async {
-    _user = await _messageRepository.getUserDetail(userId: selectedUserId);
+    _user =
+        await _messageRepository.getUserDetail(userId: widget.selectedUserId);
     Message message = await _messageRepository
-        .getLastMessage(currentUserId: userId, selectedUserId: selectedUserId)
+        .getLastMessage(
+            currentUserId: widget.userId, selectedUserId: widget.selectedUserId)
         .catchError((e) => print(e));
     if (message == null) {
       _chat = ChatModel(
@@ -37,32 +45,22 @@ class ChatWidget extends StatelessWidget {
           name: _user.name,
           photourl: _user.photo,
           lastMessageSend: message.text,
-          lastMessagePhoto: message.photos,
+          lastMessagePhoto: message.photos == null ? null : message.photos,
           timestamp: message.timestamp);
     }
     return _chat;
   }
 
-  Future openChat(BuildContext context) async {
-    u.User currentUser = await _messageRepository.getUserDetail(userId: userId);
-    u.User selectedUser =
-        await _messageRepository.getUserDetail(userId: selectedUserId);
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => MessagingPage(
-          currentUser,
-          selectedUser,
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _messageBloc = MessagesBloc(messageRepository: _messageRepository);
   }
 
-  Future deleteChat() async {
-    await _messageRepository.deleteChat(
-      currentUserId: userId,
-      selectedUserId: selectedUserId,
-    );
+  @override
+  void dispose() {
+    _messageBloc.close();
+    super.dispose();
   }
 
   @override
@@ -79,7 +77,11 @@ class ChatWidget extends StatelessWidget {
         } else {
           return GestureDetector(
             onTap: () async {
-              await openChat(context);
+              await _messageBloc.openChat(
+                context: context,
+                selectedUserId: widget.selectedUserId,
+                userId: widget.userId,
+              );
             },
             onLongPress: () {
               showDialog(
@@ -115,7 +117,10 @@ class ChatWidget extends StatelessWidget {
                       ),
                       FlatButton(
                         onPressed: () async {
-                          await deleteChat();
+                          await _messageRepository.deleteChat(
+                            currentUserId: widget.userId,
+                            selectedUserId: widget.selectedUserId,
+                          );
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -171,7 +176,7 @@ class ChatWidget extends StatelessWidget {
                             _chat.lastMessageSend != null
                                 ? Text(
                                     _chat.lastMessageSend,
-                                    overflow: TextOverflow.fade,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Colors.grey,
                                     ),
@@ -206,7 +211,7 @@ class ChatWidget extends StatelessWidget {
                             ),
                           )
                         : Text(
-                            timeago.format(creationTime.toDate()),
+                            timeago.format(widget.creationTime.toDate()),
                             style: TextStyle(
                               color: Colors.black,
                             ),

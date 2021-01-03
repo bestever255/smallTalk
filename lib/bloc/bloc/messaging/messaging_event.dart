@@ -22,3 +22,12 @@ class SendMessageEvent extends MessagingEvent {
   @override
   List<Object> get props => [message];
 }
+
+class DeleteMessageEvent extends MessagingEvent {
+  final String messageId;
+
+  DeleteMessageEvent({@required this.messageId});
+
+  @override
+  List<Object> get props => [messageId];
+}

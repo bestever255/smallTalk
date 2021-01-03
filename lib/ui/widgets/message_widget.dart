@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/message.dart' as mes;
 import 'package:tinder_clone/repository/messaging_repository.dart';
-import 'package:tinder_clone/ui/constants.dart';
 import 'package:tinder_clone/ui/widgets/message_bubble.dart';
-import 'package:tinder_clone/ui/widgets/photo_widget.dart';
+import 'package:tinder_clone/ui/widgets/photo_bubble.dart';
 
 class MessageWidget extends StatefulWidget {
   final String messageId;
@@ -19,6 +19,7 @@ class MessageWidget extends StatefulWidget {
 class _MessageWidgetState extends State<MessageWidget> {
   MessagingRepository _messagingRepository = MessagingRepository();
   mes.Message _message;
+  MessagingBloc _messagingBloc;
 
   Future<mes.Message> getDetails() async {
     _message = (await _messagingRepository.getMessageDetail(
@@ -29,87 +30,89 @@ class _MessageWidgetState extends State<MessageWidget> {
   bool get isMe => _message.senderId == widget.currentUserId;
 
   @override
+  void initState() {
+    super.initState();
+    _messagingBloc = MessagingBloc(messagingRepository: _messagingRepository);
+  }
+
+  @override
   void dispose() {
     super.dispose();
+    _messagingBloc.close();
   }
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-    return FutureBuilder(
-      future: getDetails(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) {
-          return Container();
-        } else {
-          _message = snapshot.data;
-          return Column(
-            // Make Chat on the right
-            crossAxisAlignment:
-                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-            children: <Widget>[
-              _message.text != null
-                  ? MessageBubble(
-                      isMe: isMe,
-                      message: _message,
-                    )
-                  : Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      direction: Axis.horizontal,
-                      children: <Widget>[
-                        isMe
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: height * .01,
-                                ),
-                                child: Text(
-                                  timeago.format(
-                                    _message.timestamp.toDate(),
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: height * .01,
+    return BlocBuilder<MessagingBloc, MessagingState>(
+      cubit: _messagingBloc,
+      builder: (context, state) {
+        return FutureBuilder(
+          future: getDetails(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            } else {
+              _message = snapshot.data;
+              return Column(
+                // Make Chat on the right
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: <Widget>[
+                  _message.text != null
+                      ? GestureDetector(
+                          onLongPress: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      title: Text(
+                                        'Delete This Message',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      content: Text(
+                                          'Are You Sure you need to delete this message?'),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: Text(
+                                            'NO',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            _messagingBloc.add(
+                                                DeleteMessageEvent(
+                                                    messageId:
+                                                        widget.messageId));
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            'YES',
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                          },
+                          child: MessageBubble(
+                            isMe: isMe,
+                            message: _message,
+                            messageId: widget.messageId,
                           ),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: height * .8,
-                              maxWidth: width * .7,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: kBackGroundColor),
-                                borderRadius:
-                                    BorderRadius.circular(height * .2),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(
-                                  height * .02,
-                                ),
-                                child: PhotoWidget(_message.photourl),
-                              ),
-                            ),
-                          ),
-                        ),
-                        isMe
-                            ? SizedBox()
-                            : Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: height * .01),
-                                child: Text(
-                                  timeago.format(
-                                    _message.timestamp.toDate(),
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-            ],
-          );
-        }
+                        )
+                      : PhotoBubble(
+                          isMe: isMe,
+                          message: _message,
+                        )
+                ],
+              );
+            }
+          },
+        );
       },
     );
   }

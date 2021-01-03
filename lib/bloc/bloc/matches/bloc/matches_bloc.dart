@@ -13,10 +13,9 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
   MatchesRepository _matchesRepository;
   MatchesBloc({@required MatchesRepository matchesRepository})
       : assert(matchesRepository != null),
-        _matchesRepository = matchesRepository;
+        _matchesRepository = matchesRepository,
+        super(LoadingState());
 
-  @override
-  MatchesState get initialState => LoadingState();
   @override
   Stream<MatchesState> mapEventToState(
     MatchesEvent event,

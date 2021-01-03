@@ -110,4 +110,11 @@ class MessagingRepository {
     });
     return _message;
   }
+
+  Future deleteMessage(
+      {String messageId}) async {
+    
+
+    await _firestore.collection('messages').doc(messageId).delete();
+  }
 }

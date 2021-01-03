@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/pages/login.dart';
-import 'package:tinder_clone/ui/pages/profile.dart';
+import 'package:tinder_clone/repository/profile.dart';
 import 'package:tinder_clone/ui/pages/splash_page.dart';
 import 'package:tinder_clone/ui/widgets/tabs.dart';
 

@@ -76,7 +76,7 @@ class _SignupFormState extends State<SignupForm> {
     var width = MediaQuery.of(context).size.width;
     // Listen to changes in state
     return BlocListener(
-      bloc: _signupBloc,
+      cubit: _signupBloc,
       listener: (BuildContext context, SignupState state) {
         if (state.isFailure) {
           print('Failure');
@@ -119,7 +119,7 @@ class _SignupFormState extends State<SignupForm> {
         }
       },
       child: BlocBuilder<SignupBloc, SignupState>(
-        bloc: _signupBloc,
+        cubit: _signupBloc,
         builder: (context, SignupState state) {
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,

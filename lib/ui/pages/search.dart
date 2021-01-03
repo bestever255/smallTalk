@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:tinder_clone/bloc/bloc/search/bloc/search_bloc.dart';
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/search_repository.dart';
@@ -24,20 +22,6 @@ class _SearchState extends State<Search> {
   User _user, _currentUser;
   int difference;
 
-  Future<void> getDifference(GeoPoint userLocation) async {
-    try {
-      // Get Your current Position
-      Position position = await Geolocator.getCurrentPosition();
-      // Get Other user location and calculate difference
-      double location = Geolocator.distanceBetween(userLocation.latitude,
-          userLocation.longitude, position.latitude, position.longitude);
-
-      difference = location.toInt();
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -55,7 +39,7 @@ class _SearchState extends State<Search> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return BlocBuilder<SearchBloc, SearchState>(
-      bloc: _searchBloc,
+      cubit: _searchBloc,
       builder: (context, state) {
         if (state is InitialSearchState) {
           _searchBloc.add(LoadUserEvent(widget.userId));
@@ -77,7 +61,7 @@ class _SearchState extends State<Search> {
           _user = state.user;
           _currentUser = state.currentUser;
 
-          getDifference(_user.location);
+          _searchBloc.getDifference(_user.location, difference);
           if (_user.location == null) {
             return Center(
               child: Text(

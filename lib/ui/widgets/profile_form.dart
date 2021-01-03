@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/profile/bloc/profile_bloc.dart';
 import 'dart:io';
@@ -23,7 +22,6 @@ class _ProfileFormState extends State<ProfileForm> {
   File photo;
   GeoPoint location;
   ProfileBloc _profileBloc;
-
   TextEditingController _nameController = new TextEditingController();
 
   bool get isPopulatet =>
@@ -33,23 +31,6 @@ class _ProfileFormState extends State<ProfileForm> {
       age != null &&
       photo != null;
 
-  Future<void> _getLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    location = GeoPoint(position.latitude, position.longitude);
-  }
-
-  void _onSubmited() async {
-    await _getLocation();
-    _profileBloc.add(Submitted(
-        name: _nameController.text,
-        gender: gender,
-        interestedIn: interestedIn,
-        age: age,
-        location: location,
-        photo: photo));
-  }
-
   bool isButtonEnabled(ProfileState state) {
     // if all forms are populated and the button is not already pressed then it will be enabled
     return isPopulatet && !state.isSubmitting;
@@ -57,14 +38,16 @@ class _ProfileFormState extends State<ProfileForm> {
 
   @override
   void initState() {
-    _getLocation();
     _profileBloc = BlocProvider.of<ProfileBloc>(context);
+    _profileBloc.getLocation(location);
+
     super.initState();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _profileBloc.close();
     super.dispose();
   }
 
@@ -329,7 +312,15 @@ class _ProfileFormState extends State<ProfileForm> {
                           ),
                           onPressed: () {
                             if (isButtonEnabled(state)) {
-                              _onSubmited();
+                              _profileBloc.onSubmited(
+                                age: age,
+                                gender: gender,
+                                interestedIn: interestedIn,
+                                location: location,
+                                nameController: _nameController,
+                                photo: photo,
+                                profileBloc: _profileBloc,
+                              );
                             } else {}
                           },
                         ),

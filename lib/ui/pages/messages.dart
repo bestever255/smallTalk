@@ -25,7 +25,7 @@ class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MessagesBloc, MessagesState>(
-      bloc: _messagesBloc,
+      cubit: _messagesBloc,
       builder: (context, state) {
         if (state is MessagesInitial) {
           _messagesBloc.add(ChatStreamEvent(currentUserId: widget.userId));
