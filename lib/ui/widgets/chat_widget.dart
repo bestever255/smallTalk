@@ -8,7 +8,6 @@ import 'package:tinder_clone/models/user.dart' as u;
 import 'package:tinder_clone/repository/message_repository.dart';
 import 'package:tinder_clone/ui/widgets/photo_widget.dart';
 
-// ignore: must_be_immutable
 class ChatWidget extends StatefulWidget {
   final String userId;
   final String selectedUserId;
@@ -65,6 +64,8 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   build(BuildContext context) {
+    getUserDetails();
+
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return FutureBuilder(

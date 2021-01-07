@@ -60,9 +60,9 @@ class MessageRepository {
           .doc(doc.docs.first.id)
           .get()
           .then((message) {
-        _message.text = message['text'];
-        _message.photourl = message['photourl'];
-        _message.timestamp = message['timestamp'];
+        _message.text = message.data()['text'];
+        _message.photourl = message.data()['photourl'];
+        _message.timestamp = message.data()['timestamp'];
       });
     }).catchError((e) => print(e));
     return _message;

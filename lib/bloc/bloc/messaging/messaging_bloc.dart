@@ -51,7 +51,10 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
     } else if (event is SendMessageEvent) {
       yield* _mapSendMessageToState(message: event.message);
     } else if (event is DeleteMessageEvent) {
-      yield* _mapDeleteMessageToState(messageId: event.messageId);
+      yield* _mapDeleteMessageToState(
+          messageId: event.messageId,
+          currentUserId: event.currentUserId,
+          selectedUserId: event.selectedUserId);
     }
   }
 
@@ -69,8 +72,12 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
     await _messagingRepository.sendMessage(message: message);
   }
 
-  Stream<MessagingState> _mapDeleteMessageToState({String messageId}) async* {
+  Stream<MessagingState> _mapDeleteMessageToState(
+      {String messageId, String currentUserId, String selectedUserId}) async* {
     yield MessageLoadingState();
-    await _messagingRepository.deleteMessage(messageId: messageId);
+    await _messagingRepository.deleteMessage(
+        messageId: messageId,
+        currentUserId: currentUserId,
+        selectedUserId: selectedUserId);
   }
 }

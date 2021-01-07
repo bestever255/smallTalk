@@ -102,19 +102,27 @@ class MessagingRepository {
         .doc(messageId)
         .get()
         .then((message) {
-      _message.senderId = message['senderId'];
-      _message.senderName = message['senderName'];
-      _message.timestamp = message['timestamp'];
-      _message.text = message['text'];
-      _message.photourl = message['photourl'];
+      _message.senderId = message.data()['senderId'];
+      _message.senderName = message.data()['senderName'];
+      _message.timestamp = message.data()['timestamp'];
+      _message.text = message.data()['text'];
+      _message.photourl = message.data()['photourl'];
     });
     return _message;
   }
 
   Future deleteMessage(
-      {String messageId}) async {
-    
-
+      {@required String messageId,
+      @required String currentUserId,
+      @required String selectedUserId}) async {
     await _firestore.collection('messages').doc(messageId).delete();
+    await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .collection('chats')
+        .doc(selectedUserId)
+        .collection('messages')
+        .doc(messageId)
+        .delete();
   }
 }

@@ -10,6 +10,20 @@ abstract class AuthenticationEvent extends Equatable {
 
 class AppStarted extends AuthenticationEvent {}
 
+class UserClosedApp extends AuthenticationEvent {
+  final String userId;
+  UserClosedApp({this.userId});
+  @override
+  List<Object> get props => [userId];
+}
+
+class UserOpenedApp extends AuthenticationEvent {
+  final String userId;
+  UserOpenedApp({this.userId});
+  @override
+  List<Object> get props => [userId];
+}
+
 class LoggedIn extends AuthenticationEvent {}
 
 class LoggedOut extends AuthenticationEvent {}

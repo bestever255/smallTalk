@@ -320,6 +320,7 @@ class _ProfileFormState extends State<ProfileForm> {
                                 nameController: _nameController,
                                 photo: photo,
                                 profileBloc: _profileBloc,
+                                isOnline: true,
                               );
                             } else {}
                           },

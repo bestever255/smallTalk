@@ -27,3 +27,17 @@ class AuthenticatedButNotSet extends AuthenticationState {
 }
 
 class Unauthenticated extends AuthenticationState {}
+
+class UserOnline extends AuthenticationState {
+  final String userId;
+  UserOnline({this.userId});
+  @override
+  List<Object> get props => [userId];
+}
+
+class UserOffline extends AuthenticationState {
+  final String userId;
+  UserOffline({this.userId});
+  @override
+  List<Object> get props => [userId];
+}

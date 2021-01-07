@@ -9,8 +9,11 @@ import 'package:tinder_clone/ui/widgets/photo_bubble.dart';
 class MessageWidget extends StatefulWidget {
   final String messageId;
   final String currentUserId;
-
-  const MessageWidget({this.messageId, this.currentUserId});
+  final String selectedUserId;
+  const MessageWidget(
+      {@required this.messageId,
+      @required this.currentUserId,
+      @required this.selectedUserId});
 
   @override
   _MessageWidgetState createState() => _MessageWidgetState();
@@ -85,10 +88,14 @@ class _MessageWidgetState extends State<MessageWidget> {
                                         ),
                                         FlatButton(
                                           onPressed: () {
-                                            _messagingBloc.add(
-                                                DeleteMessageEvent(
-                                                    messageId:
-                                                        widget.messageId));
+                                            _messagingBloc
+                                                .add(DeleteMessageEvent(
+                                              messageId: widget.messageId,
+                                              currentUserId:
+                                                  widget.currentUserId,
+                                              selectedUserId:
+                                                  widget.selectedUserId,
+                                            ));
                                             Navigator.of(context).pop();
                                           },
                                           child: Text(
