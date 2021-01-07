@@ -74,11 +74,9 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapUserOpenedAppToState({String userId}) async* {
     await _userRepository.userOnline(userId);
-    yield UserOnline(userId: userId);
   }
 
   Stream<AuthenticationState> _mapUserClosedAppToState({String userId}) async* {
     await _userRepository.userOffline(userId);
-    yield UserOffline(userId: userId);
   }
 }

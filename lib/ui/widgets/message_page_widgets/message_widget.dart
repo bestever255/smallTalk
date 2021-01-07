@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/message.dart' as mes;
 import 'package:tinder_clone/repository/messaging_repository.dart';
-import 'package:tinder_clone/ui/widgets/message_bubble.dart';
-import 'package:tinder_clone/ui/widgets/photo_bubble.dart';
+import 'package:tinder_clone/ui/widgets/message_page_widgets/message_bubble.dart';
+import 'package:tinder_clone/ui/widgets/message_page_widgets/photo_bubble.dart';
 
 class MessageWidget extends StatefulWidget {
   final String messageId;

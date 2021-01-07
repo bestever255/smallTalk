@@ -112,4 +112,8 @@ class UserRepository {
         .doc(userId)
         .update({'isOnline': false});
   }
+
+  Stream<DocumentSnapshot> isOnline({String selectedUserId}) {
+    return _firestore.collection('users').doc(selectedUserId).snapshots();
+  }
 }

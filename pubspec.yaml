@@ -44,6 +44,7 @@ dependencies:
   timeago: ^2.0.29
   uuid: ^2.2.2
   connectivity_plus: ^0.7.1
+  intl: ^0.16.1
 
 
 
