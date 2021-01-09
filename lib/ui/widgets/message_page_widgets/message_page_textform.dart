@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/models/user.dart';
@@ -96,10 +96,10 @@ class _MessagePageTextFormState extends State<MessagePageTextForm> {
                             color: Colors.white,
                           ),
                           onPressed: () async {
-                            FilePickerResult result = await FilePicker.platform
-                                .pickFiles(type: FileType.image);
-                            if (result != null) {
-                              File photo = File(result.files.single.path);
+                            final pickedFile = await ImagePicker().getImage(
+                                source: ImageSource.gallery, imageQuality: 85);
+                            if (pickedFile != null) {
+                              File photo = File(pickedFile.path);
 
                               if (photo != null) {
                                 _messagingBloc.add(

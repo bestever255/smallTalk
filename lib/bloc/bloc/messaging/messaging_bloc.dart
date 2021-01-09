@@ -55,6 +55,11 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
           messageId: event.messageId,
           currentUserId: event.currentUserId,
           selectedUserId: event.selectedUserId);
+    } else if (event is DeletePhotoEvent) {
+      yield* _mapDeletePhotoToState(
+          messageId: event.messageId,
+          currentUserId: event.currentUserId,
+          selectedUserId: event.selectedUserId);
     }
   }
 
@@ -76,6 +81,15 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
       {String messageId, String currentUserId, String selectedUserId}) async* {
     yield MessageLoadingState();
     await _messagingRepository.deleteMessage(
+        messageId: messageId,
+        currentUserId: currentUserId,
+        selectedUserId: selectedUserId);
+  }
+
+  Stream<MessagingState> _mapDeletePhotoToState(
+      {String messageId, String currentUserId, String selectedUserId}) async* {
+    yield MessageLoadingState();
+    await _messagingRepository.deletePhoto(
         messageId: messageId,
         currentUserId: currentUserId,
         selectedUserId: selectedUserId);

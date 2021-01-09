@@ -14,7 +14,7 @@ class MessageRepository {
         .collection('users')
         .doc(userId)
         .collection('chats')
-        .orderBy('timestamp', descending: true)
+        .orderBy('timestamp', descending: false)
         .snapshots();
   }
 

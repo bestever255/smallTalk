@@ -57,6 +57,7 @@ class MessagingRepository {
         'senderId': message.senderId,
         'text': message.text,
         'photourl': null,
+        'isSeen': false,
         'timestamp': DateTime.now(),
       });
     }
@@ -91,7 +92,7 @@ class MessagingRepository {
         .collection('chats')
         .doc(selectedUserId)
         .collection('messages')
-        .orderBy('timestamp', descending: false)
+        .orderBy('timestamp', descending: true)
         .snapshots();
   }
 
@@ -124,5 +125,27 @@ class MessagingRepository {
         .collection('messages')
         .doc(messageId)
         .delete();
+  }
+
+  Future deletePhoto(
+      {@required String messageId,
+      String currentUserId,
+      String selectedUserId}) async {
+    String downloadUrl;
+    await _firestore
+        .collection('messages')
+        .doc(messageId)
+        .get()
+        .then((message) {
+      downloadUrl = message.data()['photourl'];
+    });
+
+    // TODO Check This
+    await FirebaseStorage.instance.refFromURL(downloadUrl).delete();
+
+    await deleteMessage(
+        messageId: messageId,
+        currentUserId: currentUserId,
+        selectedUserId: selectedUserId);
   }
 }

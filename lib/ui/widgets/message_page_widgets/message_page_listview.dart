@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,10 +10,8 @@ import 'package:tinder_clone/ui/widgets/message_page_widgets/message_page_textfo
 
 import 'message_widget.dart';
 
-//1- add intl package and fix date
 //2- add seen feature
 //3- cache messages
-//4- fix laggy list view
 class MessagePageListView extends StatefulWidget {
   final User currentUser;
   final User selectedUser;
@@ -77,6 +77,8 @@ class _MessagePageListViewState extends State<MessagePageListView> {
                   } else if (snapshot.data.docs.isNotEmpty) {
                     return Flexible(
                       child: ListView.builder(
+                        shrinkWrap: true,
+                        reverse: true,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (ctx, i) {
                           return MessageWidget(

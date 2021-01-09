@@ -44,6 +44,40 @@ class _MessageWidgetState extends State<MessageWidget> {
     _messagingBloc.close();
   }
 
+  void messageAlerDialoge(Function onPressed) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text(
+                'Delete This Message',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Text('Are You Sure you need to delete this message?'),
+              actions: [
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'NO',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    onPressed();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'YES',
+                  ),
+                ),
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MessagingBloc, MessagingState>(
@@ -63,57 +97,39 @@ class _MessageWidgetState extends State<MessageWidget> {
                 children: <Widget>[
                   _message.text != null
                       ? GestureDetector(
-                          onLongPress: () {
-                            showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                      title: Text(
-                                        'Delete This Message',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      content: Text(
-                                          'Are You Sure you need to delete this message?'),
-                                      actions: [
-                                        FlatButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: Text(
-                                            'NO',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            _messagingBloc
-                                                .add(DeleteMessageEvent(
-                                              messageId: widget.messageId,
-                                              currentUserId:
-                                                  widget.currentUserId,
-                                              selectedUserId:
-                                                  widget.selectedUserId,
-                                            ));
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(
-                                            'YES',
-                                          ),
-                                        ),
-                                      ],
-                                    ));
-                          },
+                          onLongPress: () => isMe
+                              ? messageAlerDialoge(
+                                  () => _messagingBloc.add(
+                                    DeleteMessageEvent(
+                                      messageId: widget.messageId,
+                                      currentUserId: widget.currentUserId,
+                                      selectedUserId: widget.selectedUserId,
+                                    ),
+                                  ),
+                                )
+                              : null,
                           child: MessageBubble(
                             isMe: isMe,
                             message: _message,
                             messageId: widget.messageId,
                           ),
                         )
-                      : PhotoBubble(
-                          isMe: isMe,
-                          message: _message,
+                      : GestureDetector(
+                          onLongPress: () => isMe
+                              ? messageAlerDialoge(
+                                  () => _messagingBloc.add(
+                                    DeletePhotoEvent(
+                                      messageId: widget.messageId,
+                                      currentUserId: widget.currentUserId,
+                                      selectedUserId: widget.selectedUserId,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                          child: PhotoBubble(
+                            isMe: isMe,
+                            message: _message,
+                          ),
                         )
                 ],
               );

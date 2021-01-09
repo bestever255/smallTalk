@@ -35,7 +35,7 @@ dependencies:
   flutter_bloc: ^6.1.1
   meta: ^1.1.8
   equatable: ^1.2.5
-  file_picker: ^2.1.4
+  image_picker: ^0.6.7+21
   font_awesome_flutter: ^8.10.1
   flutter_datetime_picker: ^1.4.0
   geolocator: ^6.1.13
