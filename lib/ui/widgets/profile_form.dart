@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/profile/bloc/profile_bloc.dart';
 import 'dart:io';
@@ -115,26 +115,32 @@ class _ProfileFormState extends State<ProfileForm> {
                         child: photo == null
                             ? GestureDetector(
                                 onTap: () async {
-                                  FilePickerResult getPic = await FilePicker
-                                      .platform
-                                      .pickFiles(type: FileType.image);
-                                  if (getPic != null) {
-                                    File file = File(getPic.files.single.path);
+                                  // FilePickerResult getPic = await FilePicker
+                                  //     .platform
+                                  //     .pickFiles(type: FileType.image);
+                                  final pickedFile = await ImagePicker()
+                                      .getImage(
+                                          source: ImageSource.gallery,
+                                          imageQuality: 85);
+                                  if (pickedFile != null) {
+                                    File file = File(pickedFile.path);
 
                                     setState(() {
                                       photo = file;
                                     });
-                                  }
+                                  } else
+                                    print('No Image Selected');
                                 },
                                 child: Image.asset('assets/profilephoto.png'),
                               )
                             : GestureDetector(
                                 onTap: () async {
-                                  FilePickerResult getPic = await FilePicker
-                                      .platform
-                                      .pickFiles(type: FileType.image);
-                                  if (getPic != null) {
-                                    File file = File(getPic.files.single.path);
+                                  final pickedFile = await ImagePicker()
+                                      .getImage(
+                                          source: ImageSource.gallery,
+                                          imageQuality: 85);
+                                  if (pickedFile != null) {
+                                    File file = File(pickedFile.path);
                                     setState(() {
                                       photo = file;
                                     });
@@ -320,6 +326,7 @@ class _ProfileFormState extends State<ProfileForm> {
                                 nameController: _nameController,
                                 photo: photo,
                                 profileBloc: _profileBloc,
+                                isOnline: true,
                               );
                             } else {}
                           },

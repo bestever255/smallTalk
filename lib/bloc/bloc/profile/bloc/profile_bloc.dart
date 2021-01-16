@@ -28,22 +28,25 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void onSubmited({
-    GeoPoint location,
-    ProfileBloc profileBloc,
-    TextEditingController nameController,
-    String gender,
-    String interestedIn,
-    DateTime age,
-    File photo,
+    @required GeoPoint location,
+    @required ProfileBloc profileBloc,
+    @required TextEditingController nameController,
+    @required String gender,
+    @required String interestedIn,
+    @required DateTime age,
+    @required File photo,
+    @required bool isOnline,
   }) async {
     await getLocation(location);
     profileBloc.add(Submitted(
-        name: nameController.text,
-        gender: gender,
-        interestedIn: interestedIn,
-        age: age,
-        location: location,
-        photo: photo));
+      name: nameController.text,
+      gender: gender,
+      interestedIn: interestedIn,
+      age: age,
+      location: location,
+      photo: photo,
+      isOnline: isOnline,
+    ));
   }
 
   @override
@@ -66,13 +69,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     } else if (event is Submitted) {
       final uid = await _userRepository.getUser();
       yield* _mapSubmittedToState(
-          name: event.name,
-          age: event.age,
-          gender: event.gender,
-          interestedIn: event.interestedIn,
-          location: event.location,
-          photo: event.photo,
-          userId: uid);
+        name: event.name,
+        age: event.age,
+        gender: event.gender,
+        interestedIn: event.interestedIn,
+        location: event.location,
+        photo: event.photo,
+        userId: uid,
+        isOnline: event.isOnline,
+      );
     }
   }
 
@@ -104,24 +109,28 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     yield state.update(isPhotoEmpty: photo == null);
   }
 
-  Stream<ProfileState> _mapSubmittedToState(
-      {String name,
-      DateTime age,
-      String gender,
-      String interestedIn,
-      GeoPoint location,
-      File photo,
-      String userId}) async* {
+  Stream<ProfileState> _mapSubmittedToState({
+    String name,
+    DateTime age,
+    String gender,
+    String interestedIn,
+    GeoPoint location,
+    File photo,
+    String userId,
+    bool isOnline,
+  }) async* {
     yield ProfileState.loading();
     try {
       await _userRepository.profileSetup(
-          photo: photo,
-          userId: userId,
-          name: name,
-          gender: gender,
-          interestedIn: interestedIn,
-          age: age,
-          location: location);
+        photo: photo,
+        userId: userId,
+        name: name,
+        gender: gender,
+        interestedIn: interestedIn,
+        age: age,
+        location: location,
+        isOnline: isOnline,
+      );
       yield ProfileState.success();
     } catch (e) {
       yield ProfileState.failure();

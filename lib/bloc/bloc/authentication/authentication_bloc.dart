@@ -27,6 +27,10 @@ class AuthenticationBloc
       yield* _mapLoggedInToState();
     } else if (event is LoggedOut) {
       yield* _mapLoggedOutToState();
+    } else if (event is UserOpenedApp) {
+      yield* _mapUserOpenedAppToState(userId: event.userId);
+    } else if (event is UserClosedApp) {
+      yield* _mapUserClosedAppToState(userId: event.userId);
     }
   }
 
@@ -51,8 +55,9 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    final isFirstTime =
-        await _userRepository.isFirstTime(await _userRepository.getUser());
+    final userId = await _userRepository.getUser();
+    final isFirstTime = await _userRepository.isFirstTime(userId);
+    await _userRepository.userOnline(userId);
     if (!isFirstTime) {
       yield AuthenticatedButNotSet(await _userRepository.getUser());
     } else {
@@ -62,6 +67,16 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
     yield Unauthenticated();
+    final userId = await _userRepository.getUser();
+    await _userRepository.userOffline(userId);
     _userRepository.signOut();
+  }
+
+  Stream<AuthenticationState> _mapUserOpenedAppToState({String userId}) async* {
+    await _userRepository.userOnline(userId);
+  }
+
+  Stream<AuthenticationState> _mapUserClosedAppToState({String userId}) async* {
+    await _userRepository.userOffline(userId);
   }
 }

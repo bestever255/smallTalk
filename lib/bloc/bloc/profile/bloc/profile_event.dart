@@ -62,6 +62,7 @@ class Submitted extends ProfileEvent {
   final DateTime age;
   final GeoPoint location;
   final File photo;
+  final bool isOnline;
 
   Submitted(
       {@required this.name,
@@ -69,7 +70,8 @@ class Submitted extends ProfileEvent {
       @required this.interestedIn,
       @required this.age,
       @required this.location,
-      @required this.photo});
+      @required this.photo,
+      @required this.isOnline});
 
   @override
   List<Object> get props => [

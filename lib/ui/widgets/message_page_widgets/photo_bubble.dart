@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/ui/constants.dart';
 import 'package:tinder_clone/ui/widgets/photo_widget.dart';
@@ -66,7 +67,7 @@ class PhotoBubble extends StatelessWidget {
                 width: width * .02,
               ),
               Text(
-                timeFormat(message),
+                DateFormat.jm().format(message.timestamp.toDate()).toString(),
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,

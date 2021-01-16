@@ -25,9 +25,28 @@ class SendMessageEvent extends MessagingEvent {
 
 class DeleteMessageEvent extends MessagingEvent {
   final String messageId;
+  final String currentUserId;
+  final String selectedUserId;
 
-  DeleteMessageEvent({@required this.messageId});
+  DeleteMessageEvent(
+      {@required this.messageId,
+      @required this.currentUserId,
+      @required this.selectedUserId});
 
   @override
-  List<Object> get props => [messageId];
+  List<Object> get props => [messageId, currentUserId, selectedUserId];
+}
+
+class DeletePhotoEvent extends MessagingEvent {
+  final String messageId;
+  final String currentUserId;
+  final String selectedUserId;
+
+  DeletePhotoEvent(
+      {@required this.messageId,
+      @required this.currentUserId,
+      @required this.selectedUserId});
+
+  @override
+  List<Object> get props => [messageId, currentUserId, selectedUserId];
 }

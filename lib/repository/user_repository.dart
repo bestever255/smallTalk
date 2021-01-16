@@ -76,7 +76,8 @@ class UserRepository {
       @required String gender,
       @required String interestedIn,
       @required DateTime age,
-      @required GeoPoint location}) async {
+      @required GeoPoint location,
+      @required bool isOnline}) async {
     UploadTask uploadTask;
     uploadTask = FirebaseStorage.instance
         .ref()
@@ -95,8 +96,24 @@ class UserRepository {
           'gender': gender,
           'interestedIn': interestedIn,
           'age': age,
+          'isOnline': isOnline,
         });
       });
     });
+  }
+
+  Future userOnline(String userId) async {
+    await _firestore.collection('users').doc(userId).update({'isOnline': true});
+  }
+
+  Future userOffline(String userId) async {
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .update({'isOnline': false});
+  }
+
+  Stream<DocumentSnapshot> isOnline({String selectedUserId}) {
+    return _firestore.collection('users').doc(selectedUserId).snapshots();
   }
 }

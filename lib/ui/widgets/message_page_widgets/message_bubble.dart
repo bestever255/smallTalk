@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tinder_clone/models/message.dart' as mes;
 
 class MessageBubble extends StatelessWidget {
@@ -6,17 +7,6 @@ class MessageBubble extends StatelessWidget {
   final mes.Message message;
   final String messageId;
   MessageBubble({this.isMe, this.message, this.messageId});
-
-  String timeFormat(mes.Message message) {
-    String hour = (message.timestamp.toDate().hour).toString();
-    String minute = (message.timestamp.toDate().minute).toString();
-    if (minute.length == 1) {
-      minute = '0' + (message.timestamp.toDate().minute).toString();
-    }
-
-    String time = hour + ':' + minute;
-    return time;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +80,7 @@ class MessageBubble extends StatelessWidget {
                 width: width * .02,
               ),
               Text(
-                timeFormat(message),
+                DateFormat.jm().format(message.timestamp.toDate()).toString(),
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,

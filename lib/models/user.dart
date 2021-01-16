@@ -8,6 +8,7 @@ class User {
   String photo;
   Timestamp age;
   GeoPoint location;
+  bool isOnline;
 
   User({
     this.uid,
@@ -17,5 +18,6 @@ class User {
     this.interestedIn,
     this.location,
     this.photo,
+    this.isOnline,
   });
 }
