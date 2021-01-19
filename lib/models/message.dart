@@ -10,6 +10,8 @@ class Message {
   String photourl;
   File photos;
   Timestamp timestamp;
+  bool isSeen;
+  bool isTyping;
 
   Message({
     this.senderName,
@@ -19,6 +21,8 @@ class Message {
     this.photourl,
     this.photos,
     this.timestamp,
+    this.isSeen,
+    this.isTyping,
   });
 
   @override

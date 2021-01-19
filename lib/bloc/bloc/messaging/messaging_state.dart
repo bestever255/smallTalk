@@ -19,3 +19,7 @@ class MessageLoadedState extends MessagingState {
   @override
   List<Object> get props => [messageStream];
 }
+
+class MessageSeen extends MessagingState {}
+
+class MessageUnseen extends MessagingState {}

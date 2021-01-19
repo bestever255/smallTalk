@@ -66,7 +66,7 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
   Stream<MessagingState> _mapMessagingStreamToState(
       {String currentUserId, String selectedUserId}) async* {
     yield MessageLoadingState();
-
+    yield MessageSeen();
     Stream<QuerySnapshot> messageStream = _messagingRepository.getMessages(
         currentUserId: currentUserId, selectedUserId: selectedUserId);
 
@@ -74,6 +74,7 @@ class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
   }
 
   Stream<MessagingState> _mapSendMessageToState({Message message}) async* {
+    yield MessageUnseen();
     await _messagingRepository.sendMessage(message: message);
   }
 

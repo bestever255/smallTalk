@@ -27,3 +27,12 @@ class AuthenticatedButNotSet extends AuthenticationState {
 }
 
 class Unauthenticated extends AuthenticationState {}
+
+class PhotoLoading extends AuthenticationState {}
+
+class PhotoLoaded extends AuthenticationState {
+  final String photoUrl;
+  PhotoLoaded(this.photoUrl);
+  @override
+  List<Object> get props => [photoUrl];
+}

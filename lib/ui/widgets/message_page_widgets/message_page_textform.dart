@@ -79,6 +79,7 @@ class _MessagePageTextFormState extends State<MessagePageTextForm> {
                   keyboardType: TextInputType.multiline,
                   textAlignVertical: TextAlignVertical.center,
                   cursorColor: kBackGroundColor,
+                  onChanged: (_) => _messagingBloc.add(TypingMessageEvent()),
                   onSubmitted: (_) {
                     setState(() {
                       _messageController.text = '';
