@@ -85,8 +85,7 @@ class UserRepository {
         .child(userId)
         .child(userId)
         .putFile(photo);
-
-    return await uploadTask.then((snapshot) async {
+    await uploadTask.then((snapshot) async {
       await snapshot.ref.getDownloadURL().then((url) async {
         await _firestore.collection('users').doc(userId).set({
           'uid': userId,
@@ -115,5 +114,13 @@ class UserRepository {
 
   Stream<DocumentSnapshot> isOnline({String selectedUserId}) {
     return _firestore.collection('users').doc(selectedUserId).snapshots();
+  }
+
+  Future<DocumentSnapshot> getUserProfile(
+      {@required String currentUserId}) async {
+    final result =
+        await _firestore.collection('users').doc(currentUserId).get();
+
+    return result;
   }
 }

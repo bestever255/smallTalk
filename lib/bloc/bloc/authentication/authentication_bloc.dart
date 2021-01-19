@@ -73,7 +73,12 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapUserOpenedAppToState({String userId}) async* {
+    yield PhotoLoading();
+    String photoUrl;
     await _userRepository.userOnline(userId);
+    final result = await _userRepository.getUserProfile(currentUserId: userId);
+    photoUrl = result.data()['photourl'];
+    yield PhotoLoaded(photoUrl);
   }
 
   Stream<AuthenticationState> _mapUserClosedAppToState({String userId}) async* {

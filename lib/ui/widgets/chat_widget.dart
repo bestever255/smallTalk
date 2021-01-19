@@ -149,60 +149,69 @@ class _ChatWidgetState extends State<ChatWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        ClipOval(
-                          child: Container(
-                            height: height * .07,
-                            width: height * .07,
-                            child: PhotoWidget(_user.photo),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              height: height * .07,
+                              width: height * .07,
+                              child: PhotoWidget(_user.photo),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: width * .03,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _user.name,
-                              style: TextStyle(
-                                fontSize: height * .03,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(
-                              height: height * .002,
-                            ),
-                            _chat.lastMessageSend != null
-                                ? Text(
-                                    _chat.lastMessageSend,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  )
-                                : _chat.lastMessagePhoto == null
-                                    ? Text('Chat Room Available')
-                                    : Row(
-                                        children: [
-                                          Icon(
-                                            Icons.photo,
-                                            color: Colors.grey,
-                                            size: height * .02,
+                          SizedBox(
+                            width: width * .03,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _user.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: height * .03,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: height * .002,
+                                ),
+                                _chat.lastMessageSend != null
+                                    ? Text(
+                                        _chat.lastMessageSend,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      )
+                                    : _chat.lastMessagePhoto == null
+                                        ? Text(
+                                            'Chat Room Available',
+                                            overflow: TextOverflow.ellipsis,
+                                          )
+                                        : Row(
+                                            children: [
+                                              Icon(
+                                                Icons.photo,
+                                                color: Colors.grey,
+                                                size: height * .02,
+                                              ),
+                                              Text(
+                                                'Photo',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: height * .015,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            'Photo',
-                                            style: TextStyle(
-                                              fontSize: height * .015,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                          ],
-                        ),
-                      ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     _chat.timestamp != null
                         ? Text(

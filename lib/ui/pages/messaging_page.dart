@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/messaging_repository.dart';
@@ -32,6 +33,8 @@ class _MessagingPageState extends State<MessagingPage> {
 
   @override
   Widget build(BuildContext context) {
+    // if widget.currentUser == recevier id && widget.selectedUser == senderId
+    // && If selected user online && this is true then message is seen
     return Scaffold(
       backgroundColor: Color.fromRGBO(25, 23, 33, 1),
       appBar: PreferredSize(
@@ -51,9 +54,13 @@ class _MessagingPageState extends State<MessagingPage> {
             topRight: Radius.circular(40),
           ),
         ),
-        child: MessagePageListView(
-          currentUser: widget.currentUser,
-          selectedUser: widget.selectedUser,
+        child: BlocProvider(
+          create: (context) =>
+              MessagingBloc(messagingRepository: _messagingRepository),
+          child: MessagePageListView(
+            currentUser: widget.currentUser,
+            selectedUser: widget.selectedUser,
+          ),
         ),
       ),
     );

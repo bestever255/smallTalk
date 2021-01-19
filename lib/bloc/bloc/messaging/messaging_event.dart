@@ -50,3 +50,5 @@ class DeletePhotoEvent extends MessagingEvent {
   @override
   List<Object> get props => [messageId, currentUserId, selectedUserId];
 }
+
+class TypingMessageEvent extends MessagingEvent {}
