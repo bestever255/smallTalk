@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
+import 'package:tinder_clone/ui/pages/profile_page.dart';
 
 // ignore: must_be_immutable
 class ProfileDrawer extends StatelessWidget {
@@ -7,9 +9,7 @@ class ProfileDrawer extends StatelessWidget {
   ProfileDrawer(this.userId);
 
   UserRepository _userRepository = UserRepository();
-  String photoUrl;
-  String name;
-
+  User _user = User();
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -19,12 +19,11 @@ class ProfileDrawer extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             color: Colors.grey[200],
-            child: FutureBuilder(
+            child: FutureBuilder<User>(
                 future: _userRepository.getUserProfile(currentUserId: userId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    photoUrl = snapshot.data.data()['photourl'];
-                    name = snapshot.data.data()['name'];
+                    _user = snapshot.data;
                     return Padding(
                       padding: const EdgeInsets.all(14.0),
                       child: Column(
@@ -34,7 +33,7 @@ class ProfileDrawer extends StatelessWidget {
                             child: CircleAvatar(
                               radius: 50,
                               backgroundColor: Colors.grey[200],
-                              backgroundImage: NetworkImage(photoUrl),
+                              backgroundImage: NetworkImage(_user.photo),
                             ),
                           ),
                           Align(
@@ -42,7 +41,7 @@ class ProfileDrawer extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.all(20),
                               child: Text(
-                                name,
+                                _user.name,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -60,6 +59,13 @@ class ProfileDrawer extends StatelessWidget {
                               Icons.person_rounded,
                               color: Colors.grey[400],
                             ),
+                            onTap: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (ctx) => ProfilePage(userId),
+                                ),
+                              );
+                            },
                           ),
                           ListTile(
                             title: Text('Messages'),

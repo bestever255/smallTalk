@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 
 part 'authentication_event.dart';
@@ -74,10 +75,11 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapUserOpenedAppToState({String userId}) async* {
     yield PhotoLoading();
+    User _user = User();
     String photoUrl;
     await _userRepository.userOnline(userId);
-    final result = await _userRepository.getUserProfile(currentUserId: userId);
-    photoUrl = result.data()['photourl'];
+    _user = await _userRepository.getUserProfile(currentUserId: userId);
+    photoUrl = _user.photo;
     yield PhotoLoaded(photoUrl);
   }
 

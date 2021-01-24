@@ -79,9 +79,7 @@ class _LoginFormState extends State<LoginForm> {
         if (state.isFailure) {
           print('Failure');
           Scaffold.of(context)
-            // ignore: deprecated_member_use
             ..hideCurrentSnackBar()
-            // ignore: deprecated_member_use
             ..showSnackBar(
               SnackBar(
                 content: Row(

@@ -97,9 +97,7 @@ class _SignupFormState extends State<SignupForm> {
         if (state.isSubmitting) {
           print('Submitting');
           Scaffold.of(context)
-            // ignore: deprecated_member_use
             ..hideCurrentSnackBar()
-            // ignore: deprecated_member_use
             ..showSnackBar(
               SnackBar(
                 content: Row(
