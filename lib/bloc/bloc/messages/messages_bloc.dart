@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/message_repository.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
@@ -13,11 +13,8 @@ part 'messages_event.dart';
 part 'messages_state.dart';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
-  MessageRepository _messageRepository;
-  MessagesBloc({@required MessageRepository messageRepository})
-      : assert(messageRepository != null),
-        _messageRepository = messageRepository,
-        super(MessagesInitial());
+  final _messageRepository = GetIt.I.get<MessageRepository>();
+  MessagesBloc() : super(MessagesInitial());
 
   Future deleteChat({String userId, String selectedUserId}) async {
     await _messageRepository.deleteChat(

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 
@@ -14,12 +15,10 @@ part 'profile_state.dart';
 
 // Convert events to states
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  UserRepository _userRepository = new UserRepository();
+  final _userRepository = GetIt.I.get<UserRepository>();
+
   // Make Sure it is not null
-  ProfileBloc({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(ProfileState.empty());
+  ProfileBloc() : super(ProfileState.empty());
 
   Future<void> getLocation(GeoPoint location) async {
     Position position = await Geolocator.getCurrentPosition(

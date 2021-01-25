@@ -47,6 +47,7 @@ dependencies:
   intl: ^0.16.1
   geocoder: ^0.2.1
   flutter_sound: ^6.0.0
+  get_it: ^5.0.6
 
 
 

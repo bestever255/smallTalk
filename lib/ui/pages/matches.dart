@@ -6,7 +6,6 @@ import 'package:tinder_clone/bloc/bloc/matches/bloc/matches_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/search/bloc/search_bloc.dart' as search;
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/matches_repository.dart';
-import 'package:tinder_clone/repository/search_repository.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
 import 'package:tinder_clone/ui/widgets/icon_widget.dart';
 import 'package:tinder_clone/ui/widgets/profile_widget.dart';
@@ -22,7 +21,6 @@ class Matches extends StatefulWidget {
 
 class _MatchesState extends State<Matches> {
   MatchesRepository _matchesRepository = MatchesRepository();
-  SearchRepository _searchRepository = SearchRepository();
   MatchesBloc _matchesBloc;
   search.SearchBloc _searchBloc;
   int difference;
@@ -30,8 +28,8 @@ class _MatchesState extends State<Matches> {
   @override
   void initState() {
     super.initState();
-    _matchesBloc = MatchesBloc(matchesRepository: _matchesRepository);
-    _searchBloc = search.SearchBloc(searchRepository: _searchRepository);
+    _matchesBloc = MatchesBloc();
+    _searchBloc = search.SearchBloc();
   }
 
   @override
