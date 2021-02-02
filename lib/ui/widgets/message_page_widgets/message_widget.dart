@@ -35,7 +35,7 @@ class _MessageWidgetState extends State<MessageWidget> {
   @override
   void initState() {
     super.initState();
-    _messagingBloc = MessagingBloc(messagingRepository: _messagingRepository);
+    _messagingBloc = MessagingBloc();
   }
 
   @override

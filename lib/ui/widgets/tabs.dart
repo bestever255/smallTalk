@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
-import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/constants.dart';
 import 'package:tinder_clone/ui/pages/matches.dart';
 import 'package:tinder_clone/ui/pages/messages.dart';
@@ -20,7 +19,6 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   AuthenticationBloc _authenticationBloc;
-  UserRepository _userRepository;
   String photoUrl;
   String storedPhotoUrl;
   AnimationController _animationController;
@@ -28,8 +26,7 @@ class _TabsState extends State<Tabs>
   @override
   void initState() {
     super.initState();
-    _userRepository = UserRepository();
-    _authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
+    _authenticationBloc = AuthenticationBloc();
     print('Online');
     _animationController = AnimationController(
       duration: Duration(seconds: 7),

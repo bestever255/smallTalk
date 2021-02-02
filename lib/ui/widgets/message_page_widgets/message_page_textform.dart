@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/models/user.dart';
-import 'package:tinder_clone/repository/messaging_repository.dart';
 import 'package:tinder_clone/ui/constants.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
 
@@ -20,7 +19,6 @@ class MessagePageTextForm extends StatefulWidget {
 
 class _MessagePageTextFormState extends State<MessagePageTextForm> {
   TextEditingController _messageController;
-  MessagingRepository _messagingRepository;
   bool isValid = false;
   MessagingBloc _messagingBloc;
 
@@ -33,8 +31,7 @@ class _MessagePageTextFormState extends State<MessagePageTextForm> {
   @override
   void initState() {
     super.initState();
-    _messagingRepository = MessagingRepository();
-    _messagingBloc = MessagingBloc(messagingRepository: _messagingRepository);
+    _messagingBloc = MessagingBloc();
     _messageController = TextEditingController();
     _messageController.text = '';
     _messageController.addListener(() {

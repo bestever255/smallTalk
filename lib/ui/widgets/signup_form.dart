@@ -3,15 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/signup/bloc/signup_bloc.dart';
-import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/constants.dart';
 
 class SignupForm extends StatefulWidget {
-  final UserRepository _userRepository;
-  SignupForm({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository;
-
   @override
   _SignupFormState createState() => _SignupFormState();
 }
@@ -20,8 +14,6 @@ class _SignupFormState extends State<SignupForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   SignupBloc _signupBloc;
-
-  UserRepository get _userRepository => widget._userRepository;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -35,7 +27,7 @@ class _SignupFormState extends State<SignupForm> {
     // This is more favortied
     // _signupBloc = BlocProvider.of<SignupBloc>(context);
     //or
-    _signupBloc = SignupBloc(userRepository: _userRepository);
+    _signupBloc = SignupBloc();
 
     // Make Listeners to controller so when typing we can get notified
     _emailController.addListener(_onEmailChanged);
@@ -97,9 +89,7 @@ class _SignupFormState extends State<SignupForm> {
         if (state.isSubmitting) {
           print('Submitting');
           Scaffold.of(context)
-            // ignore: deprecated_member_use
             ..hideCurrentSnackBar()
-            // ignore: deprecated_member_use
             ..showSnackBar(
               SnackBar(
                 content: Row(

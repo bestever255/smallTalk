@@ -53,7 +53,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   @override
   void initState() {
     super.initState();
-    _messageBloc = MessagesBloc(messageRepository: _messageRepository);
+    _messageBloc = MessagesBloc();
   }
 
   @override

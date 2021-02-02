@@ -3,18 +3,15 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/repository/matches_repository.dart';
 
 part 'matches_event.dart';
 part 'matches_state.dart';
 
 class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
-  MatchesRepository _matchesRepository;
-  MatchesBloc({@required MatchesRepository matchesRepository})
-      : assert(matchesRepository != null),
-        _matchesRepository = matchesRepository,
-        super(LoadingState());
+  MatchesBloc() : super(LoadingState());
+  final _matchesRepository = GetIt.I.get<MatchesRepository>();
 
   @override
   Stream<MatchesState> mapEventToState(

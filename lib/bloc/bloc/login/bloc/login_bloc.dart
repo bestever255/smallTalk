@@ -5,34 +5,14 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/validators.dart';
+import 'package:get_it/get_it.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  UserRepository _userRepository;
-  LoginBloc({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(LoginState.empty());
-
-  // @override
-  // Stream<LoginState> transformEvents(
-  //   Stream<LoginEvent> events,
-  //   Stream<LoginState> Function(LoginEvent event) next,
-  // ) {
-  //   // We do debounce if we need to delay the validation so we give the user time to write and not show error always
-  //   // So we need to debounce email and password
-  //   final nonDebounceStream = events.where((event) {
-  //     return (event is! EmailChanged || event is! PasswordChanged);
-  //   });
-  //   final debounceStream = events.where((event) {
-  //     return (event is EmailChanged || event is PasswordChanged);
-  //   }).debounceTime(Duration(milliseconds: 300));
-
-  //   return events
-  //       .transformEvents(nonDebounceStream.mergeWith([debounceStream]), next);
-  // }
+  LoginBloc() : super(LoginState.empty());
+  final _userRepository = GetIt.I.get<UserRepository>();
 
   @override
   Stream<LoginState> mapEventToState(

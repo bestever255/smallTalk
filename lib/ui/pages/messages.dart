@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/bloc/bloc/messages/messages_bloc.dart';
-import 'package:tinder_clone/repository/message_repository.dart';
 import 'package:tinder_clone/ui/widgets/chat_widget.dart';
 
 class Messages extends StatefulWidget {
@@ -13,13 +13,12 @@ class Messages extends StatefulWidget {
 }
 
 class _MessagesState extends State<Messages> {
-  MessageRepository _messageRepository = MessageRepository();
   MessagesBloc _messagesBloc;
 
   @override
   void initState() {
     super.initState();
-    _messagesBloc = MessagesBloc(messageRepository: _messageRepository);
+    _messagesBloc = GetIt.I.get<MessagesBloc>();
   }
 
   @override

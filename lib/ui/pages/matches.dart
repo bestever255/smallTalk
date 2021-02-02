@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/bloc/bloc/matches/bloc/matches_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/search/bloc/search_bloc.dart' as search;
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/matches_repository.dart';
-import 'package:tinder_clone/repository/search_repository.dart';
 import 'package:tinder_clone/ui/pages/messaging_page.dart';
 import 'package:tinder_clone/ui/widgets/icon_widget.dart';
 import 'package:tinder_clone/ui/widgets/profile_widget.dart';
@@ -21,17 +21,20 @@ class Matches extends StatefulWidget {
 }
 
 class _MatchesState extends State<Matches> {
-  MatchesRepository _matchesRepository = MatchesRepository();
-  SearchRepository _searchRepository = SearchRepository();
+  // MatchesRepository _matchesRepository = MatchesRepository();
+  // MatchesBloc _matchesBloc;
+  // search.SearchBloc _searchBloc;
+  int difference;
   MatchesBloc _matchesBloc;
   search.SearchBloc _searchBloc;
-  int difference;
+  MatchesRepository _matchesRepository;
 
   @override
   void initState() {
     super.initState();
-    _matchesBloc = MatchesBloc(matchesRepository: _matchesRepository);
-    _searchBloc = search.SearchBloc(searchRepository: _searchRepository);
+    _matchesBloc = GetIt.I.get<MatchesBloc>();
+    _searchBloc = GetIt.I.get<search.SearchBloc>();
+    _matchesRepository = GetIt.I.get<MatchesRepository>();
   }
 
   @override

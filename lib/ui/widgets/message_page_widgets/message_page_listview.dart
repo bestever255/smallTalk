@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/user.dart';
-import 'package:tinder_clone/repository/messaging_repository.dart';
 import 'package:tinder_clone/ui/widgets/message_page_widgets/message_page_textform.dart';
 
 import 'message_widget.dart';
@@ -23,13 +22,11 @@ class MessagePageListView extends StatefulWidget {
 
 class _MessagePageListViewState extends State<MessagePageListView> {
   MessagingBloc _messagingBloc;
-  MessagingRepository _messagingRepository;
 
   @override
   void initState() {
     super.initState();
-    _messagingRepository = MessagingRepository();
-    _messagingBloc = MessagingBloc(messagingRepository: _messagingRepository);
+    _messagingBloc = MessagingBloc();
   }
 
   @override

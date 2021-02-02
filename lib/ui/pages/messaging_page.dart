@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/user.dart';
-import 'package:tinder_clone/repository/messaging_repository.dart';
 
 import 'package:tinder_clone/ui/widgets/message_page_widgets/message_page_appbar.dart';
 import 'package:tinder_clone/ui/widgets/message_page_widgets/message_page_listview.dart';
@@ -16,13 +16,12 @@ class MessagingPage extends StatefulWidget {
 }
 
 class _MessagingPageState extends State<MessagingPage> {
-  MessagingRepository _messagingRepository = MessagingRepository();
   MessagingBloc _messagingBloc;
 
   @override
   void initState() {
     super.initState();
-    _messagingBloc = MessagingBloc(messagingRepository: _messagingRepository);
+    _messagingBloc = GetIt.I.get<MessagingBloc>();
   }
 
   @override
@@ -55,8 +54,7 @@ class _MessagingPageState extends State<MessagingPage> {
           ),
         ),
         child: BlocProvider(
-          create: (context) =>
-              MessagingBloc(messagingRepository: _messagingRepository),
+          create: (context) => MessagingBloc(),
           child: MessagePageListView(
             currentUser: widget.currentUser,
             selectedUser: widget.selectedUser,

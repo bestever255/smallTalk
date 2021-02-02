@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:get_it/get_it.dart';
+import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 
 part 'authentication_event.dart';
@@ -11,12 +12,8 @@ part 'authentication_state.dart';
 // Takes Events and convert them to States
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final UserRepository _userRepository;
-  AuthenticationBloc({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(Uninitialized());
-
+  AuthenticationBloc() : super(Uninitialized());
+  final _userRepository = GetIt.I.get<UserRepository>();
   @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
@@ -74,10 +71,11 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapUserOpenedAppToState({String userId}) async* {
     yield PhotoLoading();
+    User _user = User();
     String photoUrl;
     await _userRepository.userOnline(userId);
-    final result = await _userRepository.getUserProfile(currentUserId: userId);
-    photoUrl = result.data()['photourl'];
+    _user = await _userRepository.getUserProfile(currentUserId: userId);
+    photoUrl = _user.photo;
     yield PhotoLoaded(photoUrl);
   }
 

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/login/bloc/login_bloc.dart';
-import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/constants.dart';
 import 'package:tinder_clone/ui/widgets/login_form.dart';
 
 class Login extends StatelessWidget {
-  final UserRepository _userRepository;
-  Login({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +19,8 @@ class Login extends StatelessWidget {
       ),
       // Provides the bloc for the descendants
       body: BlocProvider<LoginBloc>(
-        create: (ctx) => LoginBloc(
-          userRepository: _userRepository,
-        ),
-        child: LoginForm(
-          userRepository: _userRepository,
-        ),
+        create: (ctx) => LoginBloc(),
+        child: LoginForm(),
       ),
     );
   }

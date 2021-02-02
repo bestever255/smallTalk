@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:tinder_clone/models/message.dart';
 import 'package:tinder_clone/repository/messaging_repository.dart';
@@ -12,11 +13,8 @@ part 'messaging_event.dart';
 part 'messaging_state.dart';
 
 class MessagingBloc extends Bloc<MessagingEvent, MessagingState> {
-  final MessagingRepository _messagingRepository;
-  MessagingBloc({@required MessagingRepository messagingRepository})
-      : assert(messagingRepository != null),
-        _messagingRepository = messagingRepository,
-        super(MessagingInitialState());
+  final _messagingRepository = GetIt.I.get<MessagingRepository>();
+  MessagingBloc() : super(MessagingInitialState());
 
   void onFormSubmitted({
     TextEditingController textEditingController,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/validators.dart';
@@ -10,29 +11,8 @@ part 'signup_event.dart';
 part 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
-  UserRepository _userRepository;
-  SignupBloc({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository,
-        super(SignupState.empty());
-
-  // @override
-  // Stream<SignupState> transformEvents(
-  //   Stream<SignupEvent> events,
-  //   Stream<SignupState> Function(SignupEvent event) next,
-  // ) {
-  //   // We do debounce if we need to delay the validation so we give the user time to write and not show error always
-  //   // So we need to debounce email and password
-  //   final nonDebounceStream = events.where((event) {
-  //     return (event is! EmailChanged || event is! PasswordChanged);
-  //   });
-  //   final debounceStream = events.where((event) {
-  //     return (event is EmailChanged || event is PasswordChanged);
-  //   }).debounceTime(Duration(milliseconds: 300));
-
-  //   return super
-  //       .transformEvents(nonDebounceStream.mergeWith([debounceStream]), next);
-  // }
+  final _userRepository = GetIt.I.get<UserRepository>();
+  SignupBloc() : super(SignupState.empty());
 
   @override
   Stream<SignupState> mapEventToState(

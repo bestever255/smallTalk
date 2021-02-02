@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:tinder_clone/models/user.dart' as u;
 
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
@@ -116,11 +118,32 @@ class UserRepository {
     return _firestore.collection('users').doc(selectedUserId).snapshots();
   }
 
-  Future<DocumentSnapshot> getUserProfile(
-      {@required String currentUserId}) async {
-    final result =
-        await _firestore.collection('users').doc(currentUserId).get();
+  Future<u.User> getUserProfile({@required String currentUserId}) async {
+    u.User _user = u.User();
+    await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .get()
+        .then((user) async {
+      _user.age = user['age'];
+      _user.gender = user['gender'];
+      _user.interestedIn = user['interestedIn'];
+      _user.location = user['location'];
+      _user.name = user['name'];
+      _user.photo = user['photourl'];
+    });
 
-    return result;
+    return _user;
+  }
+
+  Future<String> formattedLocation(GeoPoint userCoordinates) async {
+    String formattedLocation;
+    final coordinates =
+        new Coordinates(userCoordinates.latitude, userCoordinates.longitude);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+    formattedLocation = '${first.featureName}, ${first.addressLine}';
+    return formattedLocation;
   }
 }
