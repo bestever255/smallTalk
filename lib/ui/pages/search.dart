@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/bloc/bloc/search/bloc/search_bloc.dart';
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/ui/widgets/icon_widget.dart';
@@ -23,7 +24,7 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    _searchBloc = SearchBloc();
+    _searchBloc = GetIt.I.get<SearchBloc>();
   }
 
   @override

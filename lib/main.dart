@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder_clone/bloc/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder_clone/ui/pages/home.dart';
 
-import 'Dependency Injection/locator.dart';
+import 'di/locator.dart';
 
 void main() async {
   setup();

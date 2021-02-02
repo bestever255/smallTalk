@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/models/user.dart';
 import 'package:tinder_clone/repository/user_repository.dart';
 import 'package:tinder_clone/ui/widgets/profile_page_widgets/Interested_in.dart';
@@ -10,7 +11,7 @@ import 'package:tinder_clone/ui/widgets/profile_page_widgets/status_message.dart
 class ProfilePage extends StatelessWidget {
   final String userId;
   ProfilePage(this.userId);
-  UserRepository _userRepository = UserRepository();
+  UserRepository _userRepository = GetIt.I.get<UserRepository>();
   User _user = User();
 
   @override

@@ -12,6 +12,7 @@ part 'matches_state.dart';
 class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
   MatchesBloc() : super(LoadingState());
   final _matchesRepository = GetIt.I.get<MatchesRepository>();
+
   @override
   Stream<MatchesState> mapEventToState(
     MatchesEvent event,

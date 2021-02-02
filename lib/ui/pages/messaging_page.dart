@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/bloc/bloc/messaging/messaging_bloc.dart';
 import 'package:tinder_clone/models/user.dart';
 
@@ -20,7 +21,7 @@ class _MessagingPageState extends State<MessagingPage> {
   @override
   void initState() {
     super.initState();
-    _messagingBloc = MessagingBloc();
+    _messagingBloc = GetIt.I.get<MessagingBloc>();
   }
 
   @override

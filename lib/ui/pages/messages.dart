@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tinder_clone/bloc/bloc/messages/messages_bloc.dart';
 import 'package:tinder_clone/ui/widgets/chat_widget.dart';
 
@@ -17,7 +18,7 @@ class _MessagesState extends State<Messages> {
   @override
   void initState() {
     super.initState();
-    _messagesBloc = MessagesBloc();
+    _messagesBloc = GetIt.I.get<MessagesBloc>();
   }
 
   @override
